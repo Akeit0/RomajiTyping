@@ -529,12 +529,6 @@ namespace RomajiTyping
 
                     if (bestElement is null)
                     {
-                        if (firstChar is >= '!' and <= '~')
-                        {
-                            result.Add(firstChar);
-                            return true;
-                        }
-
                         return false;
                     }
 
@@ -554,7 +548,26 @@ namespace RomajiTyping
                 }
                 else
                 {
-                    result.Add(remainingTarget[0]);
+                    if (firstChar is < '!' or > '~')
+                    {
+                        return false;
+                    }
+
+                    if (currentInput.Length != 0)
+                    {
+                        if (currentInput[0] != firstChar)
+                        {
+                            return false;
+                        }
+
+                        currentInput = currentInput[1..];
+                    }
+                    else
+                    {
+                        result.Add(firstChar);
+                    }
+
+
                     remainingTarget = remainingTarget[1..];
                 }
             }
