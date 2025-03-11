@@ -344,10 +344,10 @@ namespace RomajiTyping
             {
                 yield return pair;
                 var romaji = pair.Romaji;
-                var hiragana = pair.Kana;
+                var hiragana = pair.Kana; 
                 yield return new(romaji, hiragana);
 
-                if (romaji[0] is not ('a' or 'i' or 'u' or 'e' or 'o'))
+                if (romaji[0] is not ('a' or 'i' or 'u' or 'e' or 'o'　or 'n'))
                 {
                     yield return pair with { Romaji = romaji[0] + romaji, Kana = "っ" + hiragana };
                 }
@@ -527,13 +527,16 @@ namespace RomajiTyping
                     }
 
 
-                    if (bestElement is null) return false;
+                    if (bestElement is null) return false; 
 
                     {
                         var romaji = bestElement.Romaji.AsSpan();
+                        Console.WriteLine(romaji.ToString()+" " + currentInput.ToString() + " " + bestElement.Kana);
                         if (currentInput.Length != 0)
                         {
+                             
                             romaji = romaji[currentInput.Length..];
+                           
                             currentInput = default;
                         }
 

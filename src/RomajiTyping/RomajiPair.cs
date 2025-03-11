@@ -17,7 +17,8 @@ namespace RomajiTyping
             {
                 if (c.Length < 2) return false;
                 if (c[0] != 'n') return false;
-                return c[1] is >= 'b' and <= 'z' and not ('e' or 'i' or 'o' or 'u' or 'n' or 'y');
+                
+                return c[1] is ((>= 'b' and <= 'z') and not ('e' or 'i' or 'o' or 'u' or 'n' or 'y'));
             }
 
             return c.StartsWith(Romaji);
@@ -35,7 +36,7 @@ namespace RomajiTyping
             if (Romaji == "n")
             {
                 if (c.Length < 2) return false;
-                return c[0] is 'ん' && c[1] is not ('あ' or 'い' or 'う' or 'え' or 'お' or 'や' or 'ゆ' or 'よ' or 'ん');
+                return c[0] is 'ん' && c[1] is not ((>='あ' and <='お') or( >='な' and <='の') or 'や' or 'ゆ' or 'よ' or 'ん');
             }
 
             return c.StartsWith(Kana);
