@@ -531,7 +531,6 @@ namespace RomajiTyping
 
                     {
                         var romaji = bestElement.Romaji.AsSpan();
-                        Console.WriteLine(romaji.ToString()+" " + currentInput.ToString() + " " + bestElement.Kana);
                         if (currentInput.Length != 0)
                         {
                              
