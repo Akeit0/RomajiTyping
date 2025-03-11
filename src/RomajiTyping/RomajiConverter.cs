@@ -416,16 +416,15 @@ namespace RomajiTyping
 
             var remainCount = text.Length;
             var lastUnMatch = 0;
-            var remainderText = text;
-            var remainderNormalizedText = normalizedText;
             while (0 < remainCount)
             {
-                var firstChar = normalizedText[0];
+                var start = text.Length - remainCount;
+                var firstChar = normalizedText[start];
                 if (firstChar is >= 'a' and <= 'z')
                 {
                     foreach (var element in romajiToKanaMap[firstChar - 'a'])
                     {
-                        if (element.MatchRomaji(remainderNormalizedText, searchMode))
+                        if (element.MatchRomaji(normalizedText.Slice(start, remainCount),searchMode))
                         {
                             foreach (var c in element.Kana)
                             {
@@ -433,8 +432,6 @@ namespace RomajiTyping
                             }
 
                             lastUnMatch = 0;
-                            remainderText = remainderText[element.ConsumeCount..];
-                            remainderNormalizedText = remainderNormalizedText[element.ConsumeCount..];
                             remainCount -= element.ConsumeCount;
                             break;
                         }
@@ -443,8 +440,8 @@ namespace RomajiTyping
 
 
                 if (remainCount == 0) return lastUnMatch;
-                if ((remainCount) != text.Length) continue;
-                result.Add(normalizeLowerRemainder ? remainderNormalizedText[0] : remainderText[0]);
+                if ((start + remainCount) != text.Length) continue;
+                result.Add(normalizeLowerRemainder ? normalizedText[start] : text[start]);
                 remainCount--;
                 lastUnMatch++;
             }
