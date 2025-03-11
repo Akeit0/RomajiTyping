@@ -344,7 +344,7 @@ namespace RomajiTyping
             {
                 yield return pair;
                 var romaji = pair.Romaji;
-                var hiragana = pair.Kana; 
+                var hiragana = pair.Kana;
                 yield return new(romaji, hiragana);
 
                 if (romaji[0] is not ('a' or 'i' or 'u' or 'e' or 'o'　or 'n'))
@@ -387,8 +387,8 @@ namespace RomajiTyping
                         var halfSpaced = c is >= '！' and <= '￦' ? (char)(c - 0xfee0) :　c;
                         return halfSpaced switch
                         {
-                            >= 'A' and <= 'Z' => (char)(c + 0x20),
-                            _ => c
+                            >= 'A' and <= 'Z' => (char)(halfSpaced + 0x20),
+                            _ => halfSpaced
                         };
                     }
             }
@@ -424,7 +424,7 @@ namespace RomajiTyping
                 {
                     foreach (var element in romajiToKanaMap[firstChar - 'a'])
                     {
-                        if (element.MatchRomaji(normalizedText.Slice(start, remainCount),searchMode))
+                        if (element.MatchRomaji(normalizedText.Slice(start, remainCount), searchMode))
                         {
                             foreach (var c in element.Kana)
                             {
@@ -527,15 +527,23 @@ namespace RomajiTyping
                     }
 
 
-                    if (bestElement is null) return false; 
+                    if (bestElement is null)
+                    {
+                        if (firstChar is >= '!' and <= '~')
+                        {
+                            result.Add(firstChar);
+                            return true;
+                        }
+
+                        return false;
+                    }
 
                     {
                         var romaji = bestElement.Romaji.AsSpan();
                         if (currentInput.Length != 0)
                         {
-                             
                             romaji = romaji[currentInput.Length..];
-                           
+
                             currentInput = default;
                         }
 
