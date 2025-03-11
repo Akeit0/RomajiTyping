@@ -3,6 +3,7 @@
 
 var target = "きょうはいいひだったネ";
 Console.WriteLine(target);
+
 var reader = RomajiConverter.Default;
 var inputs = new SimpleStringBuilder();
 var remain = new SimpleStringBuilder();
@@ -15,19 +16,20 @@ while (true)
     {
         inputs.Clear();
         Console.Clear();
-        Console.WriteLine("Please input target text in romaji");
+        Console.WriteLine("Please input target text");
         target = reader.Convert(Console.ReadLine());
         Console.Clear();
     }
     else if (key.Key == ConsoleKey.Backspace)
     {
-        inputs.RemoveAtSwapBack(inputs.Count - 1);
+        if(inputs.Length > 0)
+            inputs.RemoveAtSwapBack(inputs.Count - 1);
     }
     else if (key.Key == ConsoleKey.Escape)
     {
         break;
     }
-    else if ('a' <= key.KeyChar)
+    else if ('!' <= key.KeyChar)
     {
         inputs.Add(key.KeyChar);
     }
