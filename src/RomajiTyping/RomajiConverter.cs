@@ -318,7 +318,13 @@ namespace RomajiTyping
                 }
                 else
                 {
-                    // 有効なASCIIでも、かな文字でない場合は失敗
+                    //未変換のものが残っていて、それと一致しない場合は失敗
+                    if (remainingInput.Length != 0 && remainingInput[0] != firstChar)
+                    {
+                        return false;
+                    }
+                    
+                    // 有効なASCIIでない場合は失敗
                     if (firstChar is < '!' or > '~')
                     {
                         return false;

@@ -7,14 +7,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e3241a6b-9b8c-4fad-a90f-477056c391d5" name="Changes" comment="Fix: char not found behavior of GetBestPath">
-      <change afterPath="$PROJECT_DIR$/src/RomajiTyping/RomajiConverter.Defaults.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.RomajiTyping/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.RomajiTyping/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/RomajiTyping/ConversionSearchMode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/RomajiTyping/ConversionSearchMode.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/RomajiTyping/RomajiConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/RomajiTyping/RomajiConverter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/RomajiTyping/RomajiPair.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/RomajiTyping/RomajiPair.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/RomajiTyping/SimpleStringBuilder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/RomajiTyping/SimpleStringBuilder.cs" afterDir="false" />
-    </list>
+    <list default="true" id="e3241a6b-9b8c-4fad-a90f-477056c391d5" name="Changes" comment="Refactor" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -50,6 +43,18 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/bb2a94dce7ca55a596694df58d3ca91c6d9c9c9c9813775e4d1abd0f91dc59/ThrowHelpers.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/c7102cd0ffb8973777e61b1942c3fffac7e14016a511d055c3adf73ff91748/ThrowHelper.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="mock://C:/Users/akito/MyProjects/RomajiTyping/sandbox/ConsoleApp1/Program.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/akito/MyProjects/RomajiTyping/sandbox/ConsoleApp1/Program.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/akito/MyProjects/RomajiTyping/src/RomajiTyping/RomajiConverter.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/akito/MyProjects/RomajiTyping/src/RomajiTyping/RomajiConverter.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/akito/MyProjects/RomajiTyping/src/RomajiTyping/RomajiConverter.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/akito/MyProjects/RomajiTyping/src/RomajiTyping/RomajiConverter.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/akito/MyProjects/RomajiTyping/src/RomajiTyping/RomajiConverter.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/akito/MyProjects/RomajiTyping/src/RomajiTyping/RomajiConverter.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/akito/MyProjects/RomajiTyping/src/RomajiTyping/RomajiConverter.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/akito/MyProjects/RomajiTyping/src/RomajiTyping/RomajiConverter.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/akito/MyProjects/RomajiTyping/src/RomajiTyping/RomajiConverter.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/akito/MyProjects/RomajiTyping/src/RomajiTyping/RomajiConverter.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/akito/MyProjects/RomajiTyping/src/RomajiTyping/RomajiConverter.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://C:/Users/akito/MyProjects/RomajiTyping/src/RomajiTyping/RomajiConverter.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://C:/Users/akito/MyProjects/RomajiTyping/src/RomajiTyping/RomajiConverter.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://C:/Users/akito/MyProjects/RomajiTyping/src/RomajiTyping/RomajiConverter.cs" root0="SKIP_HIGHLIGHTING" />
@@ -188,7 +193,7 @@
       <workItem from="1705293132089" duration="303000" />
       <workItem from="1741662530204" duration="23444000" />
       <workItem from="1741699721952" duration="107000" />
-      <workItem from="1741699837924" duration="12256000" />
+      <workItem from="1741699837924" duration="13445000" />
     </task>
     <task id="LOCAL-00001" summary="Fix: bug">
       <option name="closed" value="true" />
@@ -238,7 +243,15 @@
       <option name="project" value="LOCAL" />
       <updated>1741705417024</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Refactor">
+      <option name="closed" value="true" />
+      <created>1741741345102</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1741741345102</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -254,6 +267,7 @@
     <MESSAGE value="Fix: remove debug code" />
     <MESSAGE value="Fix: normalization and ascii targets" />
     <MESSAGE value="Fix: char not found behavior of GetBestPath" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix: char not found behavior of GetBestPath" />
+    <MESSAGE value="Refactor" />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactor" />
   </component>
 </project>
