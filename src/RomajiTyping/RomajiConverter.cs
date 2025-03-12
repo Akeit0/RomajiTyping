@@ -60,6 +60,70 @@ namespace RomajiTyping
             return map;
         }
 
+        public static char HalfKanaToFullKana(char c)
+        {
+            {
+                return c switch
+                {
+                    'ｧ' => 'ァ',
+                    'ｱ' => 'ア',
+                    'ｨ' => 'ィ',
+                    'ｲ' => 'イ',
+                    'ｩ' => 'ゥ',
+                    'ｳ' => 'ウ',
+                    'ｪ' => 'ェ',
+                    'ｴ' => 'エ',
+                    'ｫ' => 'ォ',
+                    'ｵ' => 'オ',
+                    'ｶ' => 'カ',
+                    'ｷ' => 'キ',
+                    'ｸ' => 'ク',
+                    'ｹ' => 'ケ',
+                    'ｺ' => 'コ',
+                    'ｻ' => 'サ',
+                    'ｼ' => 'シ',
+                    'ｽ' => 'ス',
+                    'ｾ' => 'セ',
+                    'ｿ' => 'ソ',
+                    'ﾀ' => 'タ',
+                    'ﾁ' => 'チ',
+                    'ｯ' => 'ッ',
+                    'ﾂ' => 'ツ',
+                    'ﾃ' => 'テ',
+                    'ﾄ' => 'ト',
+                    'ﾅ' => 'ナ',
+                    'ﾆ' => 'ニ',
+                    'ﾇ' => 'ヌ',
+                    'ﾈ' => 'ネ',
+                    'ﾉ' => 'ノ',
+                    'ﾊ' => 'ハ',
+                    'ﾋ' => 'ヒ',
+                    'ﾌ' => 'フ',
+                    'ﾍ' => 'ヘ',
+                    'ﾎ' => 'ホ',
+                    'ﾏ' => 'マ',
+                    'ﾐ' => 'ミ',
+                    'ﾑ' => 'ム',
+                    'ﾒ' => 'メ',
+                    'ﾓ' => 'モ',
+                    'ｬ' => 'ャ',
+                    'ﾔ' => 'ヤ',
+                    'ｭ' => 'ュ',
+                    'ﾕ' => 'ユ',
+                    'ｮ' => 'ョ',
+                    'ﾖ' => 'ヨ',
+                    'ﾗ' => 'ラ',
+                    'ﾘ' => 'リ',
+                    'ﾙ' => 'ル',
+                    'ﾚ' => 'レ',
+                    'ﾛ' => 'ロ',
+                    'ﾜ' => 'ワ',
+                    'ﾝ' => 'ン',
+                    _ => c
+                };
+            }
+        }
+
         /// <summary>
         /// 文字を正規化
         /// e.g. ａｂｃｄｅ -> abcde,アイウエオ -> あいうえお
@@ -86,7 +150,7 @@ namespace RomajiTyping
                     return '-';
                 case >= 'ァ' and <= 'ン': return (char)(c - ('ァ' - 'ぁ'));
                 case >= 'ゔ' and <= 'ゖ': return (char)(c + ('ァ' - 'ぁ'));
-                case >= 'ｧ'　and <= 'ﾝ': return (char)(c - ('ｧ' - 'ぁ'));
+                case >= 'ｧ'　and <= 'ﾝ': return HalfKanaToFullKana(c);
                 default:
                     {
                         var halfSpaced = c is >= '！' and <= '￦' ? (char)(c - ('！' - '!')) :　c;
@@ -110,10 +174,19 @@ namespace RomajiTyping
         public static void Normalize(ReadOnlySpan<char> input, SimpleStringBuilder result, bool isCaseSensitive = false)
         {
             result.Clear();
+            char last = default;
             foreach (var c in input)
             {
-                result.Add(Normalize(c, isCaseSensitive));
+                if (c is 'ﾞ' or 'ﾟ')
+                {
+                    result[^1] = (char)(last + (c == 'ﾞ' ? 1 : 2));
+                    continue;
+                }
+
+                result.Add(last = Normalize(c, isCaseSensitive));
             }
+
+            Console.WriteLine(result.ToString());
         }
 
         /// <summary>
@@ -149,9 +222,8 @@ namespace RomajiTyping
         /// <param name="input">ローマ字での入力</param>
         /// <param name="result">結果の格納</param>
         /// <param name="normalize">文字列を正規化 <see cref="Normalize(char,bool)"/> </param>
-        /// <param name="normalizeRemainder">未変換部にも正規化</param>
         /// <returns></returns>
-        public int Convert(ReadOnlySpan<char> input, SimpleStringBuilder result, bool normalize = true, bool normalizeRemainder = false)
+        public int Convert(ReadOnlySpan<char> input, SimpleStringBuilder result, bool normalize = true)
         {
             result.Clear();
             ReadOnlySpan<char> normalizedText = input;
@@ -159,14 +231,15 @@ namespace RomajiTyping
             {
                 Normalize(input, normalizedBuffer, IsCaseSensitive);
                 normalizedText = normalizedBuffer.AsSpan();
+                
             }
 
-            var remainCount = input.Length;
+            var remainCount = normalizedText.Length;
             // 未変換の文字数
             var lastUnMatch = 0;
             while (0 < remainCount)
             {
-                var start = input.Length - remainCount;
+                var start = normalizedText.Length - remainCount;
                 if (TryGetPairFromRomaji(normalizedText.Slice(start, remainCount), out var pair))
                 {
                     foreach (var c in pair.Kana)
@@ -179,8 +252,7 @@ namespace RomajiTyping
                     continue;
                 }
 
-                if ((start + remainCount) != input.Length) continue;
-                result.Add(normalizeRemainder ? normalizedText[start] : input[start]);
+                result.Add(normalizedText[start]);
                 remainCount--;
                 lastUnMatch++;
             }
@@ -265,7 +337,7 @@ namespace RomajiTyping
             result.Clear();
             var current = resultCache;
             current.Clear();
-            var lastUnMatch = Convert(input, current, normalize, true);
+            var lastUnMatch = Convert(input, current, normalize);
             if (current.Length - lastUnMatch > target.Length)
                 return false;
             var converted = current.AsSpan()[..^lastUnMatch];
@@ -323,7 +395,7 @@ namespace RomajiTyping
                     {
                         return false;
                     }
-                    
+
                     // 有効なASCIIでない場合は失敗
                     if (firstChar is < '!' or > '~')
                     {
