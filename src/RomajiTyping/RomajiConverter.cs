@@ -154,11 +154,11 @@ namespace RomajiTyping
                 ('ふ', true) => 'ぷ',
                 ('へ', true) => 'ぺ',
                 ('ほ', true) => 'ぽ',
-                ('わ',false) =>'ヷ',
-                ('ゐ',false) =>'ヸ',
-                ('ゑ',false) =>'ヹ',
-                ('を',false) =>'ヺ',
-                _ => throw new InvalidOperationException( "Invalid Voice Sound")
+                ('わ', false) => 'ヷ',
+                ('ゐ', false) => 'ヸ',
+                ('ゑ', false) => 'ヹ',
+                ('を', false) => 'ヺ',
+                _ => throw new InvalidOperationException("Invalid Voice Sound")
             };
         }
 
@@ -214,7 +214,7 @@ namespace RomajiTyping
             {
                 if (c is 'ﾞ' or 'ﾟ')
                 {
-                    result[^1] =AddVoiceSound(last, c == 'ﾟ');
+                    result[^1] = AddVoiceSound(last, c == 'ﾟ');
                     continue;
                 }
 
@@ -355,23 +355,69 @@ namespace RomajiTyping
             return bestPair is not null;
         }
 
+
+        void CompareWithConversion(ReadOnlySpan<char> input, ReadOnlySpan<char> target, out int inputMatchCount, out int targetMatchCount)
+        {
+            inputMatchCount = 0;
+            targetMatchCount = 0;
+            bool failed = false;
+            while (inputMatchCount < input.Length)
+            {
+                for (int i = inputMatchCount; i < input.Length; i++)
+                {
+                    if (target.Length <= targetMatchCount || input[i] != target[targetMatchCount])
+                    {
+                        if (failed)
+                            return;
+                        break;
+                    }
+
+                    inputMatchCount++;
+                    targetMatchCount++;
+                    failed = false;
+                }
+
+                if (TryGetPairFromRomaji(input.Slice(inputMatchCount), out var pair))
+                {
+                    if (!target.Slice(targetMatchCount).StartsWith(pair.Kana))
+                    {
+                        targetMatchCount += pair.Kana.Length;
+                        return;
+                    }
+
+                    inputMatchCount += pair.Romaji.Length;
+                    targetMatchCount += pair.Kana.Length;
+                }
+                else
+                {
+                    failed = true;
+                }
+            }
+
+            return;
+        }
+
+
         /// <summary>
         ///  最適なパスを取得
         /// </summary>
         /// <param name="input">入力文字列</param>
         /// <param name="target">変換後文字列</param>
         /// <param name="result">最適な残りの入力</param>
+        ///     <param name="currentInputMatchCount">現在の入力の一致数</param>
+        /// <param name="currentTargetMatchCount"></param>
         /// <param name="normalize">inputとtargetを正規化するか <see cref="Normalize(char,bool)"/>></param>
         /// <returns></returns>
-        public bool GetBestPath(ReadOnlySpan<char> input, ReadOnlySpan<char> target, SimpleStringBuilder result, bool normalize = true)
+        public bool GetBestPath(ReadOnlySpan<char> input, ReadOnlySpan<char> target, SimpleStringBuilder result, out int currentInputMatchCount, out int currentTargetMatchCount, bool normalize = true)
         {
+            var baseTarget = target;
+            currentTargetMatchCount = 0;
             result.Clear();
-            var current = resultCache;
-            current.Clear();
-            var lastUnMatch = Convert(input, current, normalize);
-            if (current.Length - lastUnMatch > target.Length)
-                return false;
-            var converted = current.AsSpan()[..^lastUnMatch];
+            if (normalize)
+            {
+                Normalize(input, resultCache, IsCaseSensitive);
+                input = resultCache.AsSpan();
+            }
 
             if (normalize)
             {
@@ -379,23 +425,15 @@ namespace RomajiTyping
                 target = normalizedBuffer.AsSpan();
             }
 
-            // 入力がターゲットの先頭と一致しない場合は失敗
-            if (!target.StartsWith(converted))
-            {
-                return false;
-            }
+            CompareWithConversion(input, target, out var inputMatchCount, out var targetMatchCount);
+            currentInputMatchCount = inputMatchCount;
+            currentTargetMatchCount = targetMatchCount;
 
             // 未入力の部分
-            var remainingTarget = target[converted.Length..];
+            var remainingTarget = target[targetMatchCount..];
             //　未変換の部分
-            ReadOnlySpan<char> remainingInput = current.AsSpan()[^lastUnMatch..];
+            ReadOnlySpan<char> remainingInput = input[inputMatchCount..];
 
-            // 未変換の部分がターゲットの残りの最初と一致する場合
-            while (0 < remainingInput.Length && 0 < remainingTarget.Length && remainingInput[0] == remainingTarget[0])
-            {
-                remainingInput = remainingInput[1..];
-                remainingTarget = remainingTarget[1..];
-            }
 
             if (remainingTarget.Length == 0)
             {
@@ -411,7 +449,6 @@ namespace RomajiTyping
                     if (remainingInput.Length != 0)
                     {
                         romaji = romaji[remainingInput.Length..];
-
                         remainingInput = default;
                     }
 
@@ -426,7 +463,6 @@ namespace RomajiTyping
                         //未変換のものが残っていて、それと一致しない場合は失敗
                         if (remainingInput[0] != firstChar)
                         {
-                            Console.WriteLine("Failed" + remainingInput.ToString() + " " + remainingInput.ToString());
                             return false;
                         }
 
@@ -437,14 +473,33 @@ namespace RomajiTyping
                         // 有効なASCIIでない場合は失敗
                         if (firstChar is < '!' or > '~')
                         {
-                            Console.WriteLine("Failed" + remainingInput.ToString());
                             return false;
                         }
 
                         result.Add(firstChar);
                     }
 
+
                     remainingTarget = remainingTarget[1..];
+                }
+            }
+
+            if (normalize)
+            {
+                var count = 0;
+                // targetMatchCountから SoundMarkを取り除く
+                for (int i = 0; i < baseTarget.Length - 1; i++)
+                {
+                    if (baseTarget[i + 1] is not ('ﾞ' or 'ﾟ'))
+                    {
+                        count++;
+                    }
+
+                    if (count == targetMatchCount)
+                    {
+                        currentTargetMatchCount = i + 1;
+                        break;
+                    }
                 }
             }
 
