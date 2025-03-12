@@ -347,7 +347,6 @@ namespace RomajiTyping
             // 入力がターゲットの先頭と一致しない場合は失敗
             if (!target.StartsWith(converted))
             {
-                Console.WriteLine("Failed StartsWith" + converted.ToString() + " " + target.ToString());
                 return false;
             }
 
@@ -387,7 +386,6 @@ namespace RomajiTyping
                 }
                 else
                 {
-                    
                     if (remainingInput.Length != 0)
                     {
                         //未変換のものが残っていて、それと一致しない場合は失敗
@@ -401,9 +399,8 @@ namespace RomajiTyping
                     }
                     else
                     {
-                        
                         // 有効なASCIIでない場合は失敗
-                        if (firstChar is  < '!' or > '~'　)
+                        if (firstChar is < '!' or > '~')
                         {
                             Console.WriteLine("Failed" + remainingInput.ToString());
                             return false;
