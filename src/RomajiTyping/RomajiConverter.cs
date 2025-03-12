@@ -150,7 +150,7 @@ namespace RomajiTyping
                     return '-';
                 case >= 'ァ' and <= 'ン': return (char)(c - ('ァ' - 'ぁ'));
                 case >= 'ゔ' and <= 'ゖ': return (char)(c + ('ァ' - 'ぁ'));
-                case >= 'ｧ'　and <= 'ﾝ': return HalfKanaToFullKana(c);
+                case >= 'ｧ'　and <= 'ﾝ': return (char)(HalfKanaToFullKana(c) - ('ァ' - 'ぁ'));
                 default:
                     {
                         var halfSpaced = c is >= '！' and <= '￦' ? (char)(c - ('！' - '!')) :　c;
@@ -185,8 +185,6 @@ namespace RomajiTyping
 
                 result.Add(last = Normalize(c, isCaseSensitive));
             }
-
-            Console.WriteLine(result.ToString());
         }
 
         /// <summary>
