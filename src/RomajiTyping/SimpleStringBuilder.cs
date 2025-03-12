@@ -87,7 +87,7 @@ namespace RomajiTyping
 
         public Span<char> AsSpan() => array.AsSpan(0, tailIndex);
 
-        public Span<char> AsSpan(int start) => array.AsSpan(start, tailIndex - start);
+        public Span<char> AsSpan(int start) => AsSpan(start, tailIndex - start);
 
         public Span<char> AsSpan(int start, int length)
         {

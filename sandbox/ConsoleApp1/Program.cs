@@ -17,6 +17,7 @@ while (true)
         inputs.Clear();
         Console.Clear();
         Console.WriteLine("Please input target text");
+        Console.CursorVisible = true;
         target = reader.Convert(Console.ReadLine());
         Console.Clear();
     }
@@ -51,6 +52,7 @@ while (true)
             }
 
             Console.ForegroundColor = ConsoleColor.White;
+            Console.CursorVisible = false;
         }
         else
         {

@@ -4,15 +4,20 @@ namespace RomajiTyping
 {
     public record RomajiPair(string Romaji, string Kana, ConversionMode conversionMode = ConversionMode.Any, int Priority = 0) : IComparable<RomajiPair>
     {
-        public bool MatchRomaji(ReadOnlySpan<char> c, ConversionSearchMode searchMode = ConversionSearchMode.Any)
+        public bool IsAvailable(ConversionSearchMode searchMode = ConversionSearchMode.Any)
         {
-            if (searchMode is ConversionSearchMode.All)
+            if (searchMode is ConversionSearchMode.None)
             {
                 if (conversionMode is not ConversionMode.Any)
                     return false;
             }
 
-            if (((byte)conversionMode & (byte)searchMode) == 0) return false;
+            return (((byte)conversionMode & (byte)searchMode) != 0) ;
+        }
+        
+        
+        public bool MatchRomaji(ReadOnlySpan<char> c)
+        {
             if (Romaji == "n")
             {
                 if (c.Length < 2) return false;
@@ -24,15 +29,8 @@ namespace RomajiTyping
             return c.StartsWith(Romaji);
         }
 
-        public bool MachHiragana(ReadOnlySpan<char> c, ConversionSearchMode searchMode = ConversionSearchMode.Any)
+        public bool MachHiragana(ReadOnlySpan<char> c)
         {
-            if (searchMode is ConversionSearchMode.All)
-            {
-                if (conversionMode is not ConversionMode.Any)
-                    return false;
-            }
-
-            if (((byte)conversionMode & (byte)searchMode) == 0) return false;
             if (Romaji == "n")
             {
                 if (c.Length < 2) return false;
@@ -42,15 +40,13 @@ namespace RomajiTyping
             return c.StartsWith(Kana);
         }
 
-        public int ConsumeCount => Romaji.Length;
-
         public int CompareTo(RomajiPair? other)
         {
             if (other is null) return 1;
             if (Kana.Length != other.Kana.Length)
-                return -Kana.Length.CompareTo(other.Kana.Length);
+                return Kana.Length.CompareTo(other.Kana.Length);
             if (Romaji.Length != other.Romaji.Length)
-                return Romaji.Length.CompareTo(other.Romaji.Length);
+                return -Romaji.Length.CompareTo(other.Romaji.Length);
             return Priority.CompareTo(other.Priority);
         }
     }
