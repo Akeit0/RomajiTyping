@@ -224,21 +224,19 @@ namespace RomajiTyping
         public int Convert(ReadOnlySpan<char> input, SimpleStringBuilder result, bool normalize = true)
         {
             result.Clear();
-            ReadOnlySpan<char> normalizedText = input;
             if (normalize)
             {
                 Normalize(input, normalizedBuffer, IsCaseSensitive);
-                normalizedText = normalizedBuffer.AsSpan();
-                
+                input = normalizedBuffer.AsSpan();
             }
 
-            var remainCount = normalizedText.Length;
+            var remainCount = input.Length;
             // 未変換の文字数
             var lastUnMatch = 0;
             while (0 < remainCount)
             {
-                var start = normalizedText.Length - remainCount;
-                if (TryGetPairFromRomaji(normalizedText.Slice(start, remainCount), out var pair))
+                var start = input.Length - remainCount;
+                if (TryGetPairFromRomaji(input.Slice(start, remainCount), out var pair))
                 {
                     foreach (var c in pair.Kana)
                     {
@@ -250,7 +248,7 @@ namespace RomajiTyping
                     continue;
                 }
 
-                result.Add(normalizedText[start]);
+                result.Add(input[start]);
                 remainCount--;
                 lastUnMatch++;
             }
@@ -388,19 +386,27 @@ namespace RomajiTyping
                 }
                 else
                 {
-                    //未変換のものが残っていて、それと一致しない場合は失敗
-                    if (remainingInput.Length != 0 && remainingInput[0] != firstChar)
+                    
+                    if (remainingInput.Length != 0)
                     {
-                        return false;
-                    }
+                        //未変換のものが残っていて、それと一致しない場合は失敗
+                        if (remainingInput[0] != firstChar)
+                        {
+                            return false;
+                        }
 
-                    // 有効なASCIIでない場合は失敗
-                    if (firstChar is < '!' or > '~')
+                        remainingInput = remainingInput[1..];
+                    }
+                    else
                     {
-                        return false;
-                    }
+                        // 有効なASCIIでない場合は失敗
+                        if (firstChar is < '!' or > '~')
+                        {
+                            return false;
+                        }
 
-                    result.Add(firstChar);
+                        result.Add(firstChar);
+                    }
 
                     remainingTarget = remainingTarget[1..];
                 }
