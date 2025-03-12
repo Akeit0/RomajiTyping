@@ -124,6 +124,45 @@ namespace RomajiTyping
             }
         }
 
+        public static char AddVoiceSound(char c, bool isSemi)
+        {
+            return (c, isSemi) switch
+            {
+                ('う', false) => 'ヴ',
+                ('か', false) => 'が',
+                ('き', false) => 'ぎ',
+                ('く', false) => 'ぐ',
+                ('け', false) => 'げ',
+                ('こ', false) => 'ご',
+                ('さ', false) => 'ざ',
+                ('し', false) => 'じ',
+                ('す', false) => 'ず',
+                ('せ', false) => 'ぜ',
+                ('そ', false) => 'ぞ',
+                ('た', false) => 'だ',
+                ('ち', false) => 'ぢ',
+                ('つ', false) => 'づ',
+                ('て', false) => 'で',
+                ('と', false) => 'ど',
+                ('は', false) => 'ば',
+                ('ひ', false) => 'び',
+                ('ふ', false) => 'ぶ',
+                ('へ', false) => 'べ',
+                ('ほ', false) => 'ぼ',
+                ('は', true) => 'ぱ',
+                ('ひ', true) => 'ぴ',
+                ('ふ', true) => 'ぷ',
+                ('へ', true) => 'ぺ',
+                ('ほ', true) => 'ぽ',
+                ('わ',false) =>'ヷ',
+                ('ゐ',false) =>'ヸ',
+                ('ゑ',false) =>'ヹ',
+                ('を',false) =>'ヺ',
+                _ => throw new InvalidOperationException( "Invalid Voice Sound")
+            };
+        }
+
+
         /// <summary>
         /// 文字を正規化
         /// e.g. ａｂｃｄｅ -> abcde,アイウエオ -> あいうえお
@@ -134,20 +173,16 @@ namespace RomajiTyping
         {
             switch (c)
             {
-                case '・':
-                    return '/';
-                case 'ー':
-                    return '-';
-                case '。':
-                    return '.';
-                case '、':
-                    return ',';
-                case '＝':
-                    return '=';
-                case 'ｦ':
-                    return 'ヲ';
-                case 'ｰ':
-                    return '-';
+                case '・': return '/';
+                case 'ー': return '-';
+                case '「': return '[';
+                case '」': return ']';
+                case '。': return '.';
+                case '、': return ',';
+                case '＝': return '=';
+                case 'ｦ': return 'ヲ';
+                case '￥': return '\\';
+                case 'ｰ': return '-';
                 case >= 'ァ' and <= 'ン': return (char)(c - ('ァ' - 'ぁ'));
                 case >= 'ゔ' and <= 'ゖ': return (char)(c + ('ァ' - 'ぁ'));
                 case >= 'ｧ'　and <= 'ﾝ': return (char)(HalfKanaToFullKana(c) - ('ァ' - 'ぁ'));
@@ -179,7 +214,7 @@ namespace RomajiTyping
             {
                 if (c is 'ﾞ' or 'ﾟ')
                 {
-                    result[^1] = (char)(last + (c == 'ﾞ' ? 1 : 2));
+                    result[^1] =AddVoiceSound(last, c == 'ﾟ');
                     continue;
                 }
 
