@@ -411,7 +411,6 @@ namespace RomajiTyping
         public bool GetBestPath(ReadOnlySpan<char> input, ReadOnlySpan<char> target, SimpleStringBuilder result, out int currentInputMatchCount, out int currentTargetMatchCount, bool normalize = true)
         {
             var baseTarget = target;
-            currentTargetMatchCount = 0;
             result.Clear();
             if (normalize)
             {
@@ -428,6 +427,23 @@ namespace RomajiTyping
             CompareWithConversion(input, target, out var inputMatchCount, out var targetMatchCount);
             currentInputMatchCount = inputMatchCount;
             currentTargetMatchCount = targetMatchCount;
+            if (normalize)
+            {
+                var count = 0;
+                // targetMatchCountから SoundMarkを取り除く
+                for (int i = 0; i < baseTarget.Length - 1; i++)
+                {
+                    if (baseTarget[i + 1] is not ('ﾞ' or 'ﾟ'))
+                    {
+                        count++;
+                    }
+
+                    if (count != targetMatchCount) continue;
+                    currentTargetMatchCount = i + 1;
+                    break;
+                }
+                currentTargetMatchCount = baseTarget.Length;
+            }
 
             // 未入力の部分
             var remainingTarget = target[targetMatchCount..];
@@ -479,27 +495,7 @@ namespace RomajiTyping
                         result.Add(firstChar);
                     }
 
-
                     remainingTarget = remainingTarget[1..];
-                }
-            }
-
-            if (normalize)
-            {
-                var count = 0;
-                // targetMatchCountから SoundMarkを取り除く
-                for (int i = 0; i < baseTarget.Length - 1; i++)
-                {
-                    if (baseTarget[i + 1] is not ('ﾞ' or 'ﾟ'))
-                    {
-                        count++;
-                    }
-
-                    if (count == targetMatchCount)
-                    {
-                        currentTargetMatchCount = i + 1;
-                        break;
-                    }
                 }
             }
 
