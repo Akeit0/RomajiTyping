@@ -5,17 +5,13 @@ using System.Runtime.InteropServices;
 namespace RomajiTyping
 {
     [StructLayout(LayoutKind.Auto)]
-    public sealed class SimpleStringBuilder
+    public sealed class SimpleList<T>(int capacity = 8)
     {
-        char[] array;
+        T[] array = new T[capacity];
         int tailIndex;
-        public SimpleStringBuilder(int capacity = 8)
-        {
-            array = new char[capacity];
-        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Add(char element)
+        public void Add(T element)
         {
             if (array.Length == tailIndex)
             {
@@ -27,7 +23,7 @@ namespace RomajiTyping
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AddRange(ReadOnlySpan<char> elements)
+        public void Add(ReadOnlySpan<T> elements)
         {
             if (array.Length < tailIndex + elements.Length)
             {
@@ -46,6 +42,14 @@ namespace RomajiTyping
             array![index] = array[tailIndex - 1];
             array[tailIndex - 1] = default!;
             tailIndex--;
+        }
+
+
+        public void RemoveLast(int count = 1)
+        {
+            CheckIndex(tailIndex - count);
+
+            tailIndex -= count;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -67,7 +71,7 @@ namespace RomajiTyping
             Array.Resize(ref array, newCapacity);
         }
 
-        public ref char this[int index]
+        public ref T this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -85,23 +89,27 @@ namespace RomajiTyping
 
         public int Count => tailIndex;
 
-        public Span<char> AsSpan() => array.AsSpan(0, tailIndex);
+        public Span<T> AsSpan() => array.AsSpan(0, tailIndex);
 
-        public Span<char> AsSpan(int start) => AsSpan(start, tailIndex - start);
+        public Span<T> AsSpan(int start) => AsSpan(start, tailIndex - start);
 
-        public Span<char> AsSpan(int start, int length)
+        public Span<T> AsSpan(int start, int length)
         {
             CheckIndex(start + length - 1);
             return array.AsSpan(start, length);
         }
 
-        public char[] GetArray() => array;
+        public T[] GetArray() => array;
 
         void CheckIndex(int index)
         {
-            if (index < 0 || index > tailIndex) throw new IndexOutOfRangeException();
+            if (index < 0 || index > tailIndex)
+                throwIndexOutOfRangeException();
+
+            void throwIndexOutOfRangeException() => throw new IndexOutOfRangeException();
         }
-        
+
+
         public override string ToString()
         {
             return AsSpan().ToString();

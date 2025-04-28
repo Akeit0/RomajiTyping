@@ -9,7 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\RomajiTyping\RomajiTyping.csproj" />
+        <ProjectReference Include="..\..\src\RomajiTyping\RomajiTyping.csproj"/>
     </ItemGroup>
 
 </Project>
